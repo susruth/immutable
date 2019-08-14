@@ -48,7 +48,7 @@ var _ = Describe("Immutable List", func() {
 			list := New(1, 2, 3, 4)
 			Expect(list.Values(0)).Should(Equal([]interface{}{1, 2, 3, 4}))
 
-			list.Remove(2)
+			list.Delete(2)
 			Expect(list.Values(1)).Should(Equal([]interface{}{1, 2, 4}))
 		})
 
@@ -56,7 +56,7 @@ var _ = Describe("Immutable List", func() {
 			list := New("hi", "hello", "bye")
 			Expect(list.Values(0)).Should(Equal([]interface{}{"hi", "hello", "bye"}))
 
-			list.Remove(1)
+			list.Delete(1)
 			Expect(list.Values(1)).Should(Equal([]interface{}{"hi", "bye"}))
 		})
 	})

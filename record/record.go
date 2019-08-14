@@ -1,23 +1,19 @@
 package record
 
-type Field struct {
-	Version uint64
-	Value   interface{}
-}
-
-type Node struct {
-	Fields []Field
-}
+import (
+	"github.com/susruth/immutable/field"
+	"github.com/susruth/immutable/node"
+)
 
 type Record struct {
 	CurrentVersion uint64
-	Nodes          map[string]Node
+	Nodes          map[string]node.Node
 }
 
 func New(vals map[string]interface{}) *Record {
-	nodes := make(map[string]Node, len(vals))
+	nodes := make(map[string]node.Node, len(vals))
 	for i, val := range vals {
-		nodes[i] = Node{[]Field{{Value: val}}}
+		nodes[i] = node.New(field.New(0, val))
 	}
 	return &Record{
 		Nodes: nodes,
@@ -26,13 +22,13 @@ func New(vals map[string]interface{}) *Record {
 
 func (record *Record) Insert(key string, value interface{}) {
 	record.CurrentVersion++
-	record.Nodes[key] = Node{Fields: []Field{{record.CurrentVersion, value}}}
+	record.Nodes[key] = node.New(field.New(record.CurrentVersion, value))
 }
 
 func (record *Record) Update(key string, value interface{}) {
 	record.CurrentVersion++
 	node := record.Nodes[key]
-	node.Fields = append(record.Nodes[key].Fields, Field{record.CurrentVersion, value})
+	node.AddField(field.New(record.CurrentVersion, value))
 	record.Nodes[key] = node
 }
 
@@ -43,7 +39,7 @@ func (record *Record) Delete(key string) {
 func (record *Record) Values(version uint64) map[string]interface{} {
 	vals := map[string]interface{}{}
 	for key, node := range record.Nodes {
-		field, stop := getField(version, node.Fields)
+		field, stop := field.Search(node.Fields, version)
 		if stop {
 			return vals
 		}
@@ -52,21 +48,4 @@ func (record *Record) Values(version uint64) map[string]interface{} {
 		}
 	}
 	return vals
-}
-
-func getField(version uint64, fields []Field) (Field, bool) {
-	if fields[len(fields)-1].Version < version {
-		return fields[len(fields)-1], false
-	}
-	if fields[0].Version > version {
-		return Field{}, true
-	}
-	field := fields[len(fields)/2]
-	if field.Version > version {
-		return getField(version, fields[:len(fields)/2])
-	}
-	if field.Version < version {
-		return getField(version, fields[len(fields)/2:])
-	}
-	return field, false
 }

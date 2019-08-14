@@ -1,23 +1,19 @@
 package list
 
-type Field struct {
-	Version uint64
-	Value   interface{}
-}
-
-type Node struct {
-	Fields []Field
-}
+import (
+	"github.com/susruth/immutable/field"
+	"github.com/susruth/immutable/node"
+)
 
 type List struct {
 	CurrentVersion uint64
-	Nodes          []Node
+	Nodes          []node.Node
 }
 
 func New(vals ...interface{}) *List {
-	nodes := make([]Node, len(vals))
+	nodes := make([]node.Node, len(vals))
 	for i, val := range vals {
-		nodes[i] = Node{[]Field{{Value: val}}}
+		nodes[i] = node.New(field.New(0, val))
 	}
 	return &List{
 		Nodes: nodes,
@@ -26,23 +22,22 @@ func New(vals ...interface{}) *List {
 
 func (list *List) Append(value interface{}) {
 	list.CurrentVersion++
-	list.Nodes = append(list.Nodes, Node{Fields: []Field{{list.CurrentVersion, value}}})
+	list.Nodes = append(list.Nodes, node.New(field.New(list.CurrentVersion, value)))
 }
 
 func (list *List) Update(index int, value interface{}) {
 	list.CurrentVersion++
-	list.Nodes[index].Fields = append(list.Nodes[index].Fields, Field{list.CurrentVersion, value})
+	list.Nodes[index].AddField(field.New(list.CurrentVersion, value))
 }
 
-func (list *List) Remove(index int) {
-	list.CurrentVersion++
-	list.Nodes[index].Fields = append(list.Nodes[index].Fields, Field{list.CurrentVersion, nil})
+func (list *List) Delete(index int) {
+	list.Update(index, nil)
 }
 
 func (list *List) Values(version uint64) []interface{} {
 	vals := []interface{}{}
 	for _, node := range list.Nodes {
-		field, stop := getField(version, node.Fields)
+		field, stop := field.Search(node.Fields, version)
 		if stop {
 			return vals
 		}
@@ -51,21 +46,4 @@ func (list *List) Values(version uint64) []interface{} {
 		}
 	}
 	return vals
-}
-
-func getField(version uint64, fields []Field) (Field, bool) {
-	if fields[len(fields)-1].Version < version {
-		return fields[len(fields)-1], false
-	}
-	if fields[0].Version > version {
-		return Field{}, true
-	}
-	field := fields[len(fields)/2]
-	if field.Version > version {
-		return getField(version, fields[:len(fields)/2])
-	}
-	if field.Version < version {
-		return getField(version, fields[len(fields)/2:])
-	}
-	return field, false
 }
