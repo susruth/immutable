@@ -112,11 +112,7 @@ func (record *Record) Store(table kv.Table) error {
 }
 
 func (record *Record) Restore(table kv.Table) error {
-	iter, err := table.Iterator()
-	if err != nil {
-		return err
-	}
-
+	iter := table.Iterator()
 	size, err := table.Size()
 	if err != nil {
 		return err

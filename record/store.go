@@ -14,11 +14,7 @@ type Store struct {
 }
 
 func NewStore(table kv.Table) *Store {
-	iter, err := table.Iterator()
-	if err != nil {
-		panic(err)
-	}
-
+	iter := table.Iterator()
 	size, err := table.Size()
 	if err != nil {
 		panic(err)

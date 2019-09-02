@@ -47,6 +47,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/renproject/kv v0.0.0-20190814001627-1d42d074c752 h1:cK35485/IuKFH5YVKkYVBVQutJET8GJske03iOBYDHg=
 github.com/renproject/kv v0.0.0-20190814001627-1d42d074c752/go.mod h1:B+LKu5xLj9t65LrbsSyzTcgLcPdWCd0qxFEtNB7NRo8=
+github.com/renproject/kv v1.0.1 h1:r0V1H1lnqSJ1D0K6F1xxtmGbY6ym6ATUCX6Y2qDBIfo=
+github.com/renproject/kv v1.0.1/go.mod h1:B+LKu5xLj9t65LrbsSyzTcgLcPdWCd0qxFEtNB7NRo8=
 github.com/renproject/phi v0.0.0-20190713013721-51f586bc4816 h1:oC/97ZhV0qi2wKf/lBalU48TkvihPCmUkDVSCup+zZU=
 github.com/renproject/phi v0.0.0-20190713013721-51f586bc4816/go.mod h1:Hrxx2ONVpfByficRjyRd1trecalYr0lo7Z0akx8UXqg=
 github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR/rfWxYHBV53g=
